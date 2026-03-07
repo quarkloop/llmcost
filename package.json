@@ -1,7 +1,17 @@
 {
   "name": "llm-cost",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Calculate token costs across OpenAI and Anthropic models. Zero dependencies, works in Node.js and browser.",
+  "author": "Reza Ebrahimi <reza.ebrahimi.dev [at] gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reza-ebrahimi/llm-cost"
+  },
+  "homepage": "https://github.com/reza-ebrahimi/llm-cost#readme",
+  "bugs": {
+    "url": "https://github.com/reza-ebrahimi/llm-cost/issues"
+  },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -35,16 +45,6 @@
     "ai",
     "calculator"
   ],
-  "author": "Reza Ebrahimi <reza.ebrahimi.dev [at] gmail.com>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/reza-ebrahimi/llm-cost"
-  },
-  "homepage": "https://github.com/reza-ebrahimi/llm-cost#readme",
-  "bugs": {
-    "url": "https://github.com/reza-ebrahimi/llm-cost/issues"
-  },
   "devDependencies": {
     "tsup": "^8.0.0",
     "typescript": "^5.4.0",

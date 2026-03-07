@@ -29,6 +29,8 @@ npm install llm-cost
 pnpm add llm-cost
 # or
 yarn add llm-cost
+# or
+bun add llm-cost
 ```
 
 ---
