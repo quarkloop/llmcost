@@ -3,7 +3,7 @@
 > Calculate token costs across 1700+ LLM models. Powered by the [tokencost](https://github.com/AgentOps-AI/tokencost) pricing database. Zero dependencies. Works in Node.js and the browser.
 
 [![npm version](https://img.shields.io/npm/v/@quarkloop/llmcost?style=flat-square)](https://www.npmjs.com/package/@quarkloop/llmcost)
-[![CI](https://img.shields.io/github/actions/workflow/status/reza-ebrahimi/llmcost/ci.yml?style=flat-square&label=CI)](https://github.com/reza-ebrahimi/llmcost/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/quarkloop/llmcost/ci.yml?style=flat-square&label=CI)](https://github.com/quarkloop/llmcost/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Bundle size](https://img.shields.io/bundlephobia/minzip/@quarkloop/llmcost?style=flat-square)](https://bundlephobia.com/package/@quarkloop/llmcost)
 

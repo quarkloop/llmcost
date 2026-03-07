@@ -6,11 +6,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/reza-ebrahimi/llmcost"
+    "url": "https://github.com/quarkloop/llmcost"
   },
-  "homepage": "https://github.com/reza-ebrahimi/llmcost#readme",
+  "homepage": "https://github.com/quarkloop/llmcost#readme",
   "bugs": {
-    "url": "https://github.com/reza-ebrahimi/llmcost/issues"
+    "url": "https://github.com/quarkloop/llmcost/issues"
   },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
