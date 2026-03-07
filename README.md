@@ -1,11 +1,11 @@
-# llm-cost
+# llmcost
 
 > Calculate token costs across 1700+ LLM models. Powered by the [tokencost](https://github.com/AgentOps-AI/tokencost) pricing database. Zero dependencies. Works in Node.js and the browser.
 
-[![npm version](https://img.shields.io/npm/v/llm-cost?style=flat-square)](https://www.npmjs.com/package/llm-cost)
-[![CI](https://img.shields.io/github/actions/workflow/status/reza-ebrahimi/llm-cost/ci.yml?style=flat-square&label=CI)](https://github.com/reza-ebrahimi/llm-cost/actions)
+[![npm version](https://img.shields.io/npm/v/llmcost?style=flat-square)](https://www.npmjs.com/package/llmcost)
+[![CI](https://img.shields.io/github/actions/workflow/status/reza-ebrahimi/llmcost/ci.yml?style=flat-square&label=CI)](https://github.com/reza-ebrahimi/llmcost/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/llm-cost?style=flat-square)](https://bundlephobia.com/package/llm-cost)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/llmcost?style=flat-square)](https://bundlephobia.com/package/llmcost)
 
 ---
 
@@ -24,13 +24,13 @@
 ## Installation
 
 ```bash
-npm install llm-cost
+npm install llmcost
 # or
-pnpm add llm-cost
+pnpm add llmcost
 # or
-yarn add llm-cost
+yarn add llmcost
 # or
-bun add llm-cost
+bun add llmcost
 ```
 
 ---
@@ -40,7 +40,7 @@ bun add llm-cost
 ### Builder API (recommended)
 
 ```ts
-import { llmCost } from "llm-cost";
+import { llmCost } from "llmcost";
 
 // Basic calculation
 const result = llmCost()
@@ -121,7 +121,7 @@ subset.forEach(r => console.log(`${r.model}: $${r.totalCost}`));
 ### Standalone helpers (no builder)
 
 ```ts
-import { calculate, compare, formatCost } from "llm-cost";
+import { calculate, compare, formatCost } from "llmcost";
 
 const result = calculate("gpt-4o", { inputTokens: 1000, outputTokens: 500 });
 console.log(formatCost(result.totalCost)); // "$0.007500"
@@ -132,7 +132,7 @@ const ranked = compare({ inputTokens: 1000, outputTokens: 500 }, ["gpt-4o", "gpt
 ### Register custom or overridden models
 
 ```ts
-import { registerModels } from "llm-cost";
+import { registerModels } from "llmcost";
 
 registerModels({
   "my-fine-tuned-model": {
@@ -150,7 +150,7 @@ const result = llmCost().model("my-fine-tuned-model").input(1000).output(500).ca
 ### List and inspect models
 
 ```ts
-import { listModels, getModelPricing } from "llm-cost";
+import { listModels, getModelPricing } from "llmcost";
 
 const all = listModels();                    // 1700+ models
 const anthropic = listModels("anthropic");
