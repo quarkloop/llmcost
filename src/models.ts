@@ -1,219 +1,120 @@
-/**
- * Pricing database for LLM models.
- * All prices are in USD per 1,000,000 tokens (per MTok).
- * Last updated: March 2026
- */
+import modelPricesRaw from "./model_prices.json";
 
-export type Provider = "openai" | "anthropic";
+// ── Raw tokencost JSON schema ────────────────────────────────────────────────
 
-export interface ModelPricing {
-  /** Model identifier */
-  model: string;
-  /** Provider name */
-  provider: Provider;
-  /** Human-readable display name */
-  displayName: string;
-  /** Cost per 1M input tokens in USD */
-  inputPricePerMToken: number;
-  /** Cost per 1M output tokens in USD */
-  outputPricePerMToken: number;
-  /** Cost per 1M cached input tokens in USD (if supported) */
-  cachedInputPricePerMToken?: number;
-  /** Context window size in tokens */
-  contextWindow?: number;
-  /** Whether this model is deprecated / legacy */
-  deprecated?: boolean;
+export interface RawModelEntry {
+  max_tokens?: number;
+  max_input_tokens?: number;
+  max_output_tokens?: number;
+  input_cost_per_token?: number;
+  output_cost_per_token?: number;
+  input_cost_per_token_batches?: number;
+  output_cost_per_token_batches?: number;
+  input_cost_per_token_batch_requests?: number;
+  cache_read_input_token_cost?: number;
+  cache_creation_input_token_cost?: number;
+  input_cost_per_token_cache_hit?: number;
+  output_cost_per_reasoning_token?: number;
+  deprecation_date?: string;
+  litellm_provider?: string;
+  mode?: string;
+  supports_function_calling?: boolean;
+  supports_vision?: boolean;
+  supports_prompt_caching?: boolean;
+  supports_reasoning?: boolean;
+  supports_system_messages?: boolean;
+  supports_response_schema?: boolean;
+  [key: string]: unknown;
 }
 
-export const MODELS: ModelPricing[] = [
-  // ── Anthropic ────────────────────────────────────────────────────────────
-  {
-    model: "claude-opus-4-6",
-    provider: "anthropic",
-    displayName: "Claude Opus 4.6",
-    inputPricePerMToken: 5.0,
-    outputPricePerMToken: 25.0,
-    cachedInputPricePerMToken: 0.5,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-opus-4-5",
-    provider: "anthropic",
-    displayName: "Claude Opus 4.5",
-    inputPricePerMToken: 5.0,
-    outputPricePerMToken: 25.0,
-    cachedInputPricePerMToken: 0.5,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-opus-4-1",
-    provider: "anthropic",
-    displayName: "Claude Opus 4.1 (Legacy)",
-    inputPricePerMToken: 15.0,
-    outputPricePerMToken: 75.0,
-    cachedInputPricePerMToken: 1.5,
-    contextWindow: 200000,
-    deprecated: true,
-  },
-  {
-    model: "claude-sonnet-4-6",
-    provider: "anthropic",
-    displayName: "Claude Sonnet 4.6",
-    inputPricePerMToken: 3.0,
-    outputPricePerMToken: 15.0,
-    cachedInputPricePerMToken: 0.3,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-sonnet-4-5",
-    provider: "anthropic",
-    displayName: "Claude Sonnet 4.5",
-    inputPricePerMToken: 3.0,
-    outputPricePerMToken: 15.0,
-    cachedInputPricePerMToken: 0.3,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-sonnet-4",
-    provider: "anthropic",
-    displayName: "Claude Sonnet 4",
-    inputPricePerMToken: 3.0,
-    outputPricePerMToken: 15.0,
-    cachedInputPricePerMToken: 0.3,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-haiku-4-5",
-    provider: "anthropic",
-    displayName: "Claude Haiku 4.5",
-    inputPricePerMToken: 1.0,
-    outputPricePerMToken: 5.0,
-    cachedInputPricePerMToken: 0.1,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-haiku-3-5",
-    provider: "anthropic",
-    displayName: "Claude Haiku 3.5",
-    inputPricePerMToken: 0.8,
-    outputPricePerMToken: 4.0,
-    cachedInputPricePerMToken: 0.08,
-    contextWindow: 200000,
-  },
-  {
-    model: "claude-haiku-3",
-    provider: "anthropic",
-    displayName: "Claude Haiku 3 (Legacy)",
-    inputPricePerMToken: 0.25,
-    outputPricePerMToken: 1.25,
-    cachedInputPricePerMToken: 0.03,
-    contextWindow: 200000,
-    deprecated: true,
-  },
+export type RawPriceDatabase = Record<string, RawModelEntry>;
 
-  // ── OpenAI ───────────────────────────────────────────────────────────────
-  {
-    model: "gpt-4o",
-    provider: "openai",
-    displayName: "GPT-4o",
-    inputPricePerMToken: 2.5,
-    outputPricePerMToken: 10.0,
-    cachedInputPricePerMToken: 1.25,
-    contextWindow: 128000,
-  },
-  {
-    model: "gpt-4o-mini",
-    provider: "openai",
-    displayName: "GPT-4o Mini",
-    inputPricePerMToken: 0.15,
-    outputPricePerMToken: 0.6,
-    cachedInputPricePerMToken: 0.075,
-    contextWindow: 128000,
-  },
-  {
-    model: "gpt-4.1",
-    provider: "openai",
-    displayName: "GPT-4.1",
-    inputPricePerMToken: 2.0,
-    outputPricePerMToken: 8.0,
-    cachedInputPricePerMToken: 1.0,
-    contextWindow: 1000000,
-  },
-  {
-    model: "gpt-4.1-mini",
-    provider: "openai",
-    displayName: "GPT-4.1 Mini",
-    inputPricePerMToken: 0.4,
-    outputPricePerMToken: 1.6,
-    cachedInputPricePerMToken: 0.2,
-    contextWindow: 1000000,
-  },
-  {
-    model: "gpt-4",
-    provider: "openai",
-    displayName: "GPT-4 (Legacy)",
-    inputPricePerMToken: 30.0,
-    outputPricePerMToken: 60.0,
-    contextWindow: 8192,
-    deprecated: true,
-  },
-  {
-    model: "gpt-3.5-turbo",
-    provider: "openai",
-    displayName: "GPT-3.5 Turbo (Legacy)",
-    inputPricePerMToken: 0.5,
-    outputPricePerMToken: 1.5,
-    contextWindow: 16385,
-    deprecated: true,
-  },
-  {
-    model: "o1",
-    provider: "openai",
-    displayName: "OpenAI o1",
-    inputPricePerMToken: 15.0,
-    outputPricePerMToken: 60.0,
-    cachedInputPricePerMToken: 7.5,
-    contextWindow: 200000,
-  },
-  {
-    model: "o1-mini",
-    provider: "openai",
-    displayName: "OpenAI o1 Mini",
-    inputPricePerMToken: 1.1,
-    outputPricePerMToken: 4.4,
-    cachedInputPricePerMToken: 0.55,
-    contextWindow: 128000,
-  },
-  {
-    model: "o3",
-    provider: "openai",
-    displayName: "OpenAI o3",
-    inputPricePerMToken: 10.0,
-    outputPricePerMToken: 40.0,
-    cachedInputPricePerMToken: 2.5,
-    contextWindow: 200000,
-  },
-  {
-    model: "o3-mini",
-    provider: "openai",
-    displayName: "OpenAI o3 Mini",
-    inputPricePerMToken: 1.1,
-    outputPricePerMToken: 4.4,
-    cachedInputPricePerMToken: 0.55,
-    contextWindow: 200000,
-  },
-  {
-    model: "o4-mini",
-    provider: "openai",
-    displayName: "OpenAI o4 Mini",
-    inputPricePerMToken: 1.1,
-    outputPricePerMToken: 4.4,
-    cachedInputPricePerMToken: 0.275,
-    contextWindow: 200000,
-  },
-];
+// ── Normalised ModelPricing ──────────────────────────────────────────────────
 
-/** Lookup map: model string → ModelPricing */
-export const MODEL_MAP = new Map<string, ModelPricing>(
-  MODELS.map((m) => [m.model, m])
+export interface ModelPricing {
+  /** Model identifier as used in API calls */
+  model: string;
+  /** LiteLLM / tokencost provider string (e.g. "openai", "anthropic") */
+  provider: string;
+  /** Interaction mode: chat | completion | embedding | image | audio | etc. */
+  mode: string;
+  /** Cost per single input token in USD */
+  inputCostPerToken: number;
+  /** Cost per single output token in USD */
+  outputCostPerToken: number;
+  /** Cost per single input token when using batch API (if supported) */
+  batchInputCostPerToken?: number;
+  /** Cost per single output token when using batch API (if supported) */
+  batchOutputCostPerToken?: number;
+  /** Cost per cached input token read (prompt caching, if supported) */
+  cacheReadCostPerToken?: number;
+  /** Cost per token written into cache (if supported) */
+  cacheWriteCostPerToken?: number;
+  /** Cost per reasoning/thinking output token (o1/o3/extended thinking) */
+  reasoningCostPerToken?: number;
+  /** Max total tokens */
+  maxTokens?: number;
+  /** Max input context window tokens */
+  maxInputTokens?: number;
+  /** Max output tokens */
+  maxOutputTokens?: number;
+  /** ISO date string when this model is/was deprecated */
+  deprecationDate?: string;
+  /** Whether this model supports prompt caching */
+  supportsPromptCaching: boolean;
+  /** Whether this model supports function/tool calling */
+  supportsFunctionCalling: boolean;
+  /** Whether this model supports vision/image input */
+  supportsVision: boolean;
+  /** Whether this model supports extended reasoning */
+  supportsReasoning: boolean;
+}
+
+// ── Normalise raw entry → ModelPricing ──────────────────────────────────────
+
+function normalise(model: string, raw: RawModelEntry): ModelPricing {
+  return {
+    model,
+    provider: raw.litellm_provider ?? "unknown",
+    mode: raw.mode ?? "chat",
+    inputCostPerToken: raw.input_cost_per_token ?? 0,
+    outputCostPerToken: raw.output_cost_per_token ?? 0,
+    batchInputCostPerToken:
+      raw.input_cost_per_token_batches ?? raw.input_cost_per_token_batch_requests,
+    batchOutputCostPerToken: raw.output_cost_per_token_batches,
+    cacheReadCostPerToken:
+      raw.cache_read_input_token_cost ?? raw.input_cost_per_token_cache_hit,
+    cacheWriteCostPerToken: raw.cache_creation_input_token_cost,
+    reasoningCostPerToken: raw.output_cost_per_reasoning_token,
+    maxTokens: raw.max_tokens,
+    maxInputTokens: raw.max_input_tokens,
+    maxOutputTokens: raw.max_output_tokens,
+    deprecationDate: raw.deprecation_date,
+    supportsPromptCaching: raw.supports_prompt_caching ?? false,
+    supportsFunctionCalling: raw.supports_function_calling ?? false,
+    supportsVision: raw.supports_vision ?? false,
+    supportsReasoning: raw.supports_reasoning ?? false,
+  };
+}
+
+// ── In-memory registry ───────────────────────────────────────────────────────
+
+const _raw = modelPricesRaw as RawPriceDatabase;
+
+/** Full normalised model map — keyed by model string */
+export const MODEL_MAP: Map<string, ModelPricing> = new Map(
+  Object.entries(_raw).map(([k, v]) => [k, normalise(k, v)])
 );
+
+/** All normalised models as an array */
+export const MODELS: ModelPricing[] = Array.from(MODEL_MAP.values());
+
+/**
+ * Merge additional or overridden pricing entries into the registry.
+ * Useful for custom models or corrected prices.
+ */
+export function registerModels(entries: Record<string, RawModelEntry>): void {
+  for (const [model, raw] of Object.entries(entries)) {
+    MODEL_MAP.set(model, normalise(model, raw));
+  }
+}
