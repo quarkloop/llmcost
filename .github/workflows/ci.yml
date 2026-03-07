@@ -42,8 +42,8 @@ jobs:
 
       - name: Verify dist output exists
         run: |
+          test -f dist/index.mjs
           test -f dist/index.js
-          test -f dist/index.cjs
           test -f dist/index.d.ts
           echo "✅ dist output verified"
 
