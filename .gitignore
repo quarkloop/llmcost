@@ -3,7 +3,6 @@ dist/
 coverage/
 *.tgz
 .DS_Store
-package-lock.json
 yarn.lock
 pnpm-lock.yaml
 bun.lockb
