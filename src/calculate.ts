@@ -230,7 +230,7 @@ export class LlmCostBuilder {
  *
  * @example
  * ```ts
- * import { llmCost } from 'llmcost';
+ * import { llmCost } from '@quarkloop/llmcost';
  *
  * const result = llmCost()
  *   .model("claude-sonnet-4-6")

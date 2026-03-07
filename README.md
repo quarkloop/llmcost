@@ -2,10 +2,10 @@
 
 > Calculate token costs across 1700+ LLM models. Powered by the [tokencost](https://github.com/AgentOps-AI/tokencost) pricing database. Zero dependencies. Works in Node.js and the browser.
 
-[![npm version](https://img.shields.io/npm/v/llmcost?style=flat-square)](https://www.npmjs.com/package/llmcost)
+[![npm version](https://img.shields.io/npm/v/@quarkloop/llmcost?style=flat-square)](https://www.npmjs.com/package/@quarkloop/llmcost)
 [![CI](https://img.shields.io/github/actions/workflow/status/reza-ebrahimi/llmcost/ci.yml?style=flat-square&label=CI)](https://github.com/reza-ebrahimi/llmcost/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Bundle size](https://img.shields.io/bundlephobia/minzip/llmcost?style=flat-square)](https://bundlephobia.com/package/llmcost)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/@quarkloop/llmcost?style=flat-square)](https://bundlephobia.com/package/@quarkloop/llmcost)
 
 ---
 
@@ -24,13 +24,13 @@
 ## Installation
 
 ```bash
-npm install llmcost
+npm install @quarkloop/llmcost
 # or
-pnpm add llmcost
+pnpm add @quarkloop/llmcost
 # or
-yarn add llmcost
+yarn add @quarkloop/llmcost
 # or
-bun add llmcost
+bun add @quarkloop/llmcost
 ```
 
 ---
@@ -40,7 +40,7 @@ bun add llmcost
 ### Builder API (recommended)
 
 ```ts
-import { llmCost } from "llmcost";
+import { llmCost } from "@quarkloop/llmcost";
 
 // Basic calculation
 const result = llmCost()
@@ -121,7 +121,7 @@ subset.forEach(r => console.log(`${r.model}: $${r.totalCost}`));
 ### Standalone helpers (no builder)
 
 ```ts
-import { calculate, compare, formatCost } from "llmcost";
+import { calculate, compare, formatCost } from "@quarkloop/llmcost";
 
 const result = calculate("gpt-4o", { inputTokens: 1000, outputTokens: 500 });
 console.log(formatCost(result.totalCost)); // "$0.007500"
@@ -132,7 +132,7 @@ const ranked = compare({ inputTokens: 1000, outputTokens: 500 }, ["gpt-4o", "gpt
 ### Register custom or overridden models
 
 ```ts
-import { registerModels } from "llmcost";
+import { registerModels } from "@quarkloop/llmcost";
 
 registerModels({
   "my-fine-tuned-model": {
@@ -150,7 +150,7 @@ const result = llmCost().model("my-fine-tuned-model").input(1000).output(500).ca
 ### List and inspect models
 
 ```ts
-import { listModels, getModelPricing } from "llmcost";
+import { listModels, getModelPricing } from "@quarkloop/llmcost";
 
 const all = listModels();                    // 1700+ models
 const anthropic = listModels("anthropic");

@@ -1,5 +1,5 @@
 {
-  "name": "llmcost",
+  "name": "@quarkloop/llmcost",
   "version": "0.1.0",
   "description": "Calculate token costs across OpenAI and Anthropic models. Zero dependencies, works in Node.js and browser.",
   "author": "Reza Ebrahimi <reza.ebrahimi.dev [at] gmail.com>",
