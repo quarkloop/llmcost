@@ -1,6 +1,6 @@
 # llm-cost
 
-> Calculate token costs across OpenAI and Anthropic models. Zero dependencies. Works in Node.js and the browser.
+> Calculate token costs across 1700+ LLM models. Powered by the [tokencost](https://github.com/AgentOps-AI/tokencost) pricing database. Zero dependencies. Works in Node.js and the browser.
 
 [![npm version](https://img.shields.io/npm/v/llm-cost?style=flat-square)](https://www.npmjs.com/package/llm-cost)
 [![CI](https://img.shields.io/github/actions/workflow/status/reza-ebrahimi/llm-cost/ci.yml?style=flat-square&label=CI)](https://github.com/reza-ebrahimi/llm-cost/actions)
@@ -11,18 +11,13 @@
 
 ## Features
 
-- 💰 Calculate cost for any supported model given input/output token counts
-- 🔄 Compare cost across all models (or a subset) — sorted cheapest first
-- ⚡ Supports prompt caching discounts (Anthropic & OpenAI)
-- 📦 Supports 50% Batch API discount for both providers
-- 🌐 Zero dependencies — works in Node.js, browsers, and edge runtimes
-- 🔷 Fully typed TypeScript with ESM + CJS dual build
-
-## Supported Models
-
-**Anthropic:** Claude Opus 4.6, Claude Opus 4.5, Claude Sonnet 4.6, Claude Sonnet 4.5, Claude Sonnet 4, Claude Haiku 4.5, Claude Haiku 3.5, Claude Haiku 3
-
-**OpenAI:** GPT-4o, GPT-4o Mini, GPT-4.1, GPT-4.1 Mini, o1, o1 Mini, o3, o3 Mini, o4 Mini, GPT-4 (legacy), GPT-3.5 Turbo (legacy)
+- 🔗 **Fluent builder API** — chainable `.model().input().output().batch().calculate()`
+- 📦 **1700+ models** from the tokencost / LiteLLM pricing database
+- 💰 **Full cost breakdown** — input, output, cache read/write, reasoning tokens
+- ⚡ **Batch API pricing** — OpenAI and Anthropic batch discounts
+- 🧩 **Extensible** — register custom models or override existing prices
+- 🌐 **Zero dependencies** — works in Node.js, browser, and edge runtimes
+- 🔷 **Fully typed TypeScript** with ESM + CJS dual build
 
 ---
 
@@ -40,141 +35,196 @@ yarn add llm-cost
 
 ## Usage
 
-### Calculate cost for a single model
+### Builder API (recommended)
 
 ```ts
-import { calculate, formatCost } from "llm-cost";
+import { llmCost } from "llm-cost";
 
-const result = calculate("claude-sonnet-4-6", {
-  inputTokens: 10_000,
-  outputTokens: 2_000,
-});
+// Basic calculation
+const result = llmCost()
+  .model("gpt-4o")
+  .input(10_000)
+  .output(2_000)
+  .calculate();
 
-console.log(result.totalCost);         // 0.06 (USD)
-console.log(formatCost(result.totalCost)); // "$0.060000"
+console.log(result.totalCost);    // 0.045 (USD)
 console.log(result.breakdown);
-// { inputCost: 0.03, outputCost: 0.03, cachedCost: 0 }
+// { inputCost: 0.025, outputCost: 0.02, cacheReadCost: 0, cacheWriteCost: 0, reasoningCost: 0 }
 ```
 
 ### With prompt caching
 
 ```ts
-const result = calculate("claude-sonnet-4-6", {
-  inputTokens: 10_000,
-  outputTokens: 2_000,
-  cachedTokens: 8_000,   // 8k tokens served from cache
+const result = llmCost()
+  .model("claude-3-5-sonnet-20241022")
+  .input(10_000)
+  .output(2_000)
+  .cachedRead(8_000)    // tokens read from cache (cheaper)
+  .cachedWrite(2_000)   // tokens written to cache
+  .calculate();
+```
+
+### With reasoning tokens (o1, o3, extended thinking)
+
+```ts
+const result = llmCost()
+  .model("o1")
+  .input(5_000)
+  .output(1_000)
+  .reasoning(3_000)   // thinking tokens billed separately
+  .calculate();
+```
+
+### With Batch API discount
+
+```ts
+const result = llmCost()
+  .model("gpt-4o")
+  .input(10_000)
+  .output(2_000)
+  .batch()         // applies 50% batch discount where available
+  .calculate();
+```
+
+### Set all usage at once
+
+```ts
+const result = llmCost()
+  .model("gpt-4o-mini")
+  .usage({
+    inputTokens: 10_000,
+    outputTokens: 2_000,
+    cachedReadTokens: 5_000,
+    reasoningTokens: 0,
+  })
+  .calculate();
+```
+
+### Compare across models — cheapest first
+
+```ts
+const ranked = llmCost()
+  .input(10_000)
+  .output(2_000)
+  .compare();                           // all 1700+ models
+
+const subset = llmCost()
+  .input(10_000)
+  .output(2_000)
+  .compare(["gpt-4o", "gpt-4o-mini", "claude-3-5-sonnet-20241022"]);
+
+subset.forEach(r => console.log(`${r.model}: $${r.totalCost}`));
+```
+
+### Standalone helpers (no builder)
+
+```ts
+import { calculate, compare, formatCost } from "llm-cost";
+
+const result = calculate("gpt-4o", { inputTokens: 1000, outputTokens: 500 });
+console.log(formatCost(result.totalCost)); // "$0.007500"
+
+const ranked = compare({ inputTokens: 1000, outputTokens: 500 }, ["gpt-4o", "gpt-4o-mini"]);
+```
+
+### Register custom or overridden models
+
+```ts
+import { registerModels } from "llm-cost";
+
+registerModels({
+  "my-fine-tuned-model": {
+    litellm_provider: "openai",
+    mode: "chat",
+    input_cost_per_token: 5e-6,
+    output_cost_per_token: 15e-6,
+  },
 });
 
-console.log(result.totalCost);  // significantly cheaper
+// Now usable anywhere
+const result = llmCost().model("my-fine-tuned-model").input(1000).output(500).calculate();
 ```
 
-### With Batch API discount (50% off)
+### List and inspect models
 
 ```ts
-const result = calculate(
-  "gpt-4o",
-  { inputTokens: 10_000, outputTokens: 2_000 },
-  { batch: true }
-);
-```
+import { listModels, getModelPricing } from "llm-cost";
 
-### Compare all models — cheapest first
-
-```ts
-import { compare } from "llm-cost";
-
-const ranked = compare({ inputTokens: 10_000, outputTokens: 2_000 });
-
-ranked.forEach((r) => {
-  console.log(`${r.displayName}: $${r.totalCost}`);
-});
-// claude-haiku-3: $0.000675
-// gpt-4o-mini: $0.0027
-// claude-haiku-3-5: ...
-// ...
-```
-
-### Compare a specific subset of models
-
-```ts
-const results = compare(
-  { inputTokens: 5_000, outputTokens: 1_000 },
-  ["gpt-4o", "claude-sonnet-4-6", "claude-haiku-4-5"]
-);
-```
-
-### Get raw pricing for a model
-
-```ts
-import { getModelPricing } from "llm-cost";
+const all = listModels();                    // 1700+ models
+const anthropic = listModels("anthropic");
+const openai = listModels("openai");
 
 const pricing = getModelPricing("gpt-4o");
-console.log(pricing.inputPricePerMToken);  // 2.5  (per 1M tokens)
-console.log(pricing.outputPricePerMToken); // 10.0
-```
-
-### List all models
-
-```ts
-import { listModels } from "llm-cost";
-
-const all = listModels();
-const anthropicOnly = listModels("anthropic");
-const openaiOnly = listModels("openai");
+console.log(pricing.inputCostPerToken);      // 2.5e-6
+console.log(pricing.supportsVision);         // true
+console.log(pricing.supportsPromptCaching);  // true
 ```
 
 ---
 
-## API
+## API Reference
 
-### `calculate(model, usage, options?)`
+### `llmCost()` → `LlmCostBuilder`
 
-| Parameter | Type | Description |
-|---|---|---|
-| `model` | `string` | Model identifier (e.g. `"gpt-4o"`, `"claude-sonnet-4-6"`) |
-| `usage.inputTokens` | `number` | Number of input / prompt tokens |
-| `usage.outputTokens` | `number` | Number of output / completion tokens |
-| `usage.cachedTokens` | `number?` | Tokens served from cache (default `0`) |
-| `options.batch` | `boolean?` | Apply 50% batch API discount (default `false`) |
+Creates a new builder instance.
 
-Returns `CostResult`:
+| Method | Description |
+|---|---|
+| `.model(name)` | Set the model identifier |
+| `.input(n)` | Input / prompt token count |
+| `.output(n)` | Output / completion token count |
+| `.cachedRead(n)` | Tokens read from prompt cache |
+| `.cachedWrite(n)` | Tokens written to prompt cache |
+| `.reasoning(n)` | Reasoning / thinking token count |
+| `.batch(enabled?)` | Apply batch API discount (default `true`) |
+| `.usage(obj)` | Set all token counts at once |
+| `.calculate()` | Execute and return `CostResult` |
+| `.compare(models?)` | Compare across models, returns `CompareResult[]` sorted cheapest first |
+
+### `CostResult`
 
 ```ts
 {
   model: string;
-  provider: "openai" | "anthropic";
-  displayName: string;
-  totalCost: number;          // USD
+  provider: string;
+  mode: string;
+  totalCost: number;       // USD
+  isBatch: boolean;
   breakdown: {
     inputCost: number;
     outputCost: number;
-    cachedCost: number;
+    cacheReadCost: number;
+    cacheWriteCost: number;
+    reasoningCost: number;
   };
-  usage: { inputTokens, outputTokens, cachedTokens };
+  usage: {
+    inputTokens: number;
+    outputTokens: number;
+    cachedReadTokens: number;
+    cachedWriteTokens: number;
+    reasoningTokens: number;
+  };
 }
 ```
 
-### `compare(usage, models?, options?)`
+### Standalone functions
 
-Same `usage` and `options` as `calculate`. Optionally pass an array of model strings to limit the comparison. Returns `CompareResult[]` sorted by `totalCost` ascending.
-
-### `getModelPricing(model)`
-
-Returns the raw `ModelPricing` object for a model, including prices per MTok and context window size.
-
-### `listModels(provider?)`
-
-Returns all `ModelPricing` entries, optionally filtered to `"openai"` or `"anthropic"`.
-
-### `formatCost(usd, decimals?)`
-
-Formats a USD number as a dollar string. Default 6 decimal places.
+| Function | Description |
+|---|---|
+| `calculate(model, usage, options?)` | Single-call cost calculation |
+| `compare(usage, models?, options?)` | Compare models, sorted cheapest first |
+| `getModelPricing(model)` | Raw `ModelPricing` object |
+| `listModels(provider?)` | All models, optionally filtered by provider |
+| `registerModels(entries)` | Add or override models in the registry |
+| `formatCost(usd, decimals?)` | Format USD as `"$0.001234"` |
 
 ---
 
-## Pricing last updated
+## Pricing Data
 
-March 2026. Prices are hardcoded and reflect official provider documentation at the time of the release. If prices change, open an issue or PR.
+Model prices are sourced from the [tokencost](https://github.com/AgentOps-AI/tokencost) / LiteLLM `model_prices.json` — a community-maintained database covering 1700+ models across OpenAI, Anthropic, Google, Mistral, Cohere, and more.
+
+Prices are bundled at build time. To get the latest prices, update the package.
 
 ---
 
