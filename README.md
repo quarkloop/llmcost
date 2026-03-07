@@ -230,13 +230,13 @@ Prices are **bundled at build time**. To get the latest prices, update the packa
 
 You can inspect the bundled snapshot version at runtime:
 
-\`\`\`ts
+```ts
 import { PRICING_DATA_VERSION } from "@quarkloop/llmcost";
 
 console.log(PRICING_DATA_VERSION.lastUpdated);  // "2026-03-07"
 console.log(PRICING_DATA_VERSION.modelCount);   // 1701
 console.log(PRICING_DATA_VERSION.sourceUrl);    // upstream URL
-\`\`\`
+```
 
 ### Pricing Data Version History
 
