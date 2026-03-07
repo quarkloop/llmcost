@@ -226,7 +226,23 @@ Creates a new builder instance.
 
 Model prices are sourced from the [tokencost](https://github.com/AgentOps-AI/tokencost) / LiteLLM `model_prices.json` — a community-maintained database covering 1700+ models across OpenAI, Anthropic, Google, Mistral, Cohere, and more.
 
-Prices are bundled at build time. To get the latest prices, update the package.
+Prices are **bundled at build time**. To get the latest prices, update the package to the newest version.
+
+You can inspect the bundled snapshot version at runtime:
+
+\`\`\`ts
+import { PRICING_DATA_VERSION } from "@quarkloop/llmcost";
+
+console.log(PRICING_DATA_VERSION.lastUpdated);  // "2026-03-07"
+console.log(PRICING_DATA_VERSION.modelCount);   // 1701
+console.log(PRICING_DATA_VERSION.sourceUrl);    // upstream URL
+\`\`\`
+
+### Pricing Data Version History
+
+| Package version | Pricing data date | Model count | Source |
+|-----------------|-------------------|-------------|--------|
+| `0.1.0` | 2026-03-07 | 1701 | [AgentOps-AI/tokencost](https://github.com/AgentOps-AI/tokencost/blob/main/tokencost/model_prices.json) |
 
 ---
 
