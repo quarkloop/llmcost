@@ -1,0 +1,58 @@
+{
+  "name": "llm-cost",
+  "version": "1.0.0",
+  "description": "Calculate token costs across OpenAI and Anthropic models. Zero dependencies, works in Node.js and browser.",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "tsc --noEmit",
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
+  },
+  "keywords": [
+    "llm",
+    "openai",
+    "anthropic",
+    "claude",
+    "gpt",
+    "tokens",
+    "cost",
+    "pricing",
+    "ai",
+    "calculator"
+  ],
+  "author": "Reza Ebrahimi <reza.ebrahimi.dev [at] gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/reza-ebrahimi/llm-cost"
+  },
+  "homepage": "https://github.com/reza-ebrahimi/llm-cost#readme",
+  "bugs": {
+    "url": "https://github.com/reza-ebrahimi/llm-cost/issues"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "sideEffects": false
+}
