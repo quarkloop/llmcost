@@ -242,6 +242,7 @@ console.log(PRICING_DATA_VERSION.sourceUrl);    // upstream URL
 
 | Package version | Pricing data date | Model count | Source |
 |-----------------|-------------------|-------------|--------|
+| `0.2.0` | 2026-03-07 | 1701 | [AgentOps-AI/tokencost](https://github.com/AgentOps-AI/tokencost/blob/main/tokencost/model_prices.json) |
 | `0.1.0` | 2026-03-07 | 1701 | [AgentOps-AI/tokencost](https://github.com/AgentOps-AI/tokencost/blob/main/tokencost/model_prices.json) |
 
 ---
