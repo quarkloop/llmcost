@@ -1,5 +1,7 @@
 # llmcost
 
+> **Archived:** This repository is no longer actively maintained. Please use [`https://github.com/quarkloop/ai`](https://github.com/quarkloop/ai) instead.
+
 > Calculate token costs across 1700+ LLM models. Powered by the [tokencost](https://github.com/AgentOps-AI/tokencost) pricing database. Zero dependencies. Works in Node.js and the browser.
 
 [![npm version](https://img.shields.io/npm/v/@quarkloop/llmcost?style=flat-square)](https://www.npmjs.com/package/@quarkloop/llmcost)
